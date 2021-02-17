@@ -1,0 +1,38 @@
+.not-valid-label {
+  color: red;
+}
+
+.not-valid {
+  border: 1px solid red;
+}
+
+.input-error {
+  margin-top: 10px;
+  color: red;
+}
+
+.input__file-picker > div > div {
+  margin: 20px 0;
+}
+
+.input__file-picker,
+.input__file-picker__image__post,
+.input__file-picker__image__post img,
+.input__file-picker__image__profile img {
+  width: 100%;
+}
+
+.input__file-picker__image__post img,
+.input__file-picker__image__profile img {
+  height: 100%;
+}
+
+.input__file-picker__image__profile {
+  width: 160px;
+  height: 160px;
+}
+
+.input__file-picker__image__profile img {
+  object-fit: cover;
+  border-radius: 50%;
+}

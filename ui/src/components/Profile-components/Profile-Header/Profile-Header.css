@@ -1,0 +1,218 @@
+.profile-header,
+.profile-header__content,
+.profile-header__content__inside,
+.modal__content__info__list,
+.modal__content__info__list__item {
+  width: 100%;
+}
+
+.modal__content__info__list__item {
+  cursor: pointer;
+}
+
+.profile-header__content {
+  padding: 14px 55px 32px 14px;
+}
+
+.profile-header__content__inside {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.profile-header__contnet__inside__img-wrapper {
+  width: 160px;
+  height: 160px;
+}
+
+.profile-header__contnet__inside__img-wrapper > div,
+.profile-header__contnet__inside__img-wrapper > div img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-header__content__inside__profile-info {
+  margin-left: 100px;
+}
+
+.profile-header__content__inside__profile-info__name div {
+  display: inline-block;
+}
+
+.profile-header__content__inside__profile-info__name div:nth-child(2) {
+  margin-left: 30px;
+}
+
+.profile-header__content__inside__profile-info__name div:nth-child(1) {
+  vertical-align: middle;
+}
+
+.profile-header__content__inside__profile-info__name div:nth-child(1) h2 {
+  font-weight: 300;
+  font-size: 30px;
+}
+
+.profile-header__content__inside__profile-info__follwers ul li {
+  display: inline-block;
+  margin: 20px 0;
+}
+
+.profile-header__content__inside__profile-info__follwers span,
+.profile-header__content__profile-info__follwers span {
+  color: rgb(27, 27, 27);
+  cursor: pointer;
+}
+
+.profile-header__content__inside__profile-info__follwers li:first-child span,
+.profile-header__content__profile-info__follwers li:first-child span {
+  cursor: default;
+}
+
+.profile-header__content__inside__profile-info__follwers
+  ul
+  li:not(:last-child) {
+  margin-right: 50px;
+}
+
+.profile-header__content__profile-info__follwers {
+  border-top: 1px solid rgba(204, 204, 204, 0.747);
+  border-bottom: 1px solid rgba(204, 204, 204, 0.747);
+}
+
+.profile-header__content__profile-info__follwers ul li {
+  text-align: center;
+}
+
+.profile-header__content__profile-info__follwers ul li span {
+  display: block;
+  line-height: 18px;
+}
+
+.profile-header__content__profile-info__follwers ul {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 12px 0;
+}
+
+.profile-header__content__inside__profile-info__description {
+  padding: 0;
+}
+
+.profile-header__content__profile-info__description {
+  margin: 30px 0;
+  padding: 0 14px;
+}
+
+.modal__content__info {
+  overflow: auto;
+}
+
+.modal__content__info__list__item {
+  padding: 5px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal__content__info__list__item__sug {
+  padding: 5px 0px;
+}
+
+.modal__content__info__list__item__profile {
+  display: flex;
+  align-items: center;
+}
+
+.modal__content__info__list__item__profile div:nth-child(1) {
+  width: 50px;
+  height: 50px;
+}
+
+.modal__content__info__list__item__profile__sug div:nth-child(1) {
+  width: 40px;
+  height: 40px;
+  align-items: stretch;
+}
+
+.modal__content__info__list__item__profile__sug p:nth-child(2) {
+  margin-top: -5px;
+}
+
+.modal__content__info__list__item__profile img{
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.modal__content__info__list__item__profile div:nth-child(2) a {
+  text-decoration: none;
+  color: rgb(27, 27, 27);
+}
+
+.profile-header__content__inside__profile-info
+  > div
+  > div:last-child
+  > button:last-child {
+  margin-left: 20px;
+}
+
+.modal__content__info__list__item__profile div:nth-child(2) {
+  margin-left: 20px;
+}
+
+@media screen and (max-width: 800px) {
+  .profile-header__content__inside__profile-info {
+    margin-left: 50px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .profile-header__content {
+    padding: 0;
+  }
+
+  .profile-header__content__inside {
+    padding: 0 14px;
+  }
+
+  .profile-header__contnet__inside__img-wrapper {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    min-height: 65px;
+  }
+
+  .profile-header__content__inside__profile-info__name div {
+    display: block;
+  }
+
+  .profile-header__content__inside__profile-info__name div:nth-child(2) {
+    margin-left: 0;
+  }
+
+  .profile-header__content__inside__profile-info {
+    margin-left: 30px;
+    width: 100%;
+  }
+
+  .profile-header__content__inside__profile-info__name > div:first-child {
+    margin-bottom: 12px;
+  }
+
+  .profile-header__content__inside__profile-info__name div:nth-child(2) button {
+    width: 100%;
+  }
+
+  .profile-header__content__inside__profile-info
+    > div
+    > div:last-child
+    > button:last-child {
+    margin-left: 0;
+    margin-top: 5px;
+  }
+}

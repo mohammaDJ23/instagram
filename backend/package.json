@@ -1,0 +1,33 @@
+{
+  "name": "ins-app-backend",
+  "version": "1.0.0",
+  "main": "app.js",
+  "engines": {
+    "node": "13.12.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "helmet": "^4.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "mongodb": "^3.6.3",
+    "multer": "^1.4.2",
+    "randomstring": "^1.1.5",
+    "socket.io": "^3.0.3",
+    "x-xss-protection": "^2.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "m-nowresideh",
+  "license": "ISC",
+  "description": ""
+}

@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&display=swap");
+
+.nav {
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  border-top: 1px solid rgba(204, 204, 204, 0.747);
+  border-bottom: 1px solid rgba(204, 204, 204, 0.747);
+}
+
+.nav__content {
+  width: 100%;
+  height: 100%;
+  max-width: 1024px;
+  padding: 0 10px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav__content__logo h2 a {
+  font-family: "Delius Swash Caps", cursive;
+  color: #000000;
+  text-decoration: none;
+}
+
+.nav__content__iconts {
+  display: flex;
+}
+
+.nav__content__iconts div {
+  padding-left: 20px;
+}
+
+.nav__content__iconts__icon svg {
+  fill: #000000;
+}
+
+.nav__content__iconts__profile {
+  width: 45px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.nav__content__iconts__profile span,
+.nav__content__iconts__profile img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.nav__content__iconts__profile img {
+  object-fit: cover;
+}
+
+.active svg {
+  fill: rgb(0, 119, 255);
+}
+
+.nav__content__input {
+  width: 200px;
+  position: relative;
+}
+
+.nav__input {
+  padding: 2px 8px 4px 26px;
+  border-radius: 2px;
+  width: 100%;
+  background-color: rgb(247, 247, 247);
+}
+
+.nav__content__input__search {
+  position: absolute;
+  top: 0.5px;
+  left: 8px;
+}
+
+.nav__content__iconts__icon {
+  cursor: pointer;
+}

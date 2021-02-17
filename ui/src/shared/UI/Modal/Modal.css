@@ -1,0 +1,36 @@
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  max-width: 400%;
+  border-radius: 5px;
+  transform: translate(-50%, -50%);
+}
+
+.modal__content {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.modal__content__header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background-color: white;
+}
+
+.modal__content__header header {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid rgba(204, 204, 204, 0.747);
+}
+
+.modal__content__info {
+  text-align: center;
+  padding: 10px;
+}

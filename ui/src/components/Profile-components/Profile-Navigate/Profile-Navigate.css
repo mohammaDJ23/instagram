@@ -1,0 +1,43 @@
+.profile-navigate {
+  border-top: 1px solid rgba(204, 204, 204, 0.747);
+}
+
+.profile-navigate__content {
+  padding: 14px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-navigate__content__icon:not(:last-child) {
+  margin-right: 160px;
+}
+
+.profile-navigate__content__icon__navigate {
+  text-decoration: none;
+}
+
+.profile-navigate__content__icon__navigate div:first-child {
+  margin-right: 6px;
+}
+
+.profile-navigate__content__icon__navigate div {
+  display: inline-block;
+}
+
+.profile-navigate__content__icon .active svg {
+  fill: rgb(27, 27, 27);
+}
+
+.profile-navigate__content__icon .active p {
+  color: rgb(27, 27, 27);
+}
+
+@media screen and (max-width: 750px) {
+  .profile-navigate {
+    border-top: unset;
+  }
+
+  .profile-navigate__content__icon:not(:last-child) {
+    margin-right: 40px;
+  }
+}

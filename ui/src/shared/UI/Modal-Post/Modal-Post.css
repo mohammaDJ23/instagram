@@ -1,0 +1,41 @@
+.modal-post,
+.modal-post__content,
+.modal-post__content__likes-quantity img,
+.modal-post__content__comments-quantity img {
+  width: 100%;
+  height: 100%;
+}
+
+.modal-post {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.432);
+}
+
+.modal-post__content {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding-left: 32%;
+  padding-top: 5%;
+}
+
+.modal-post__content__likes-quantity div,
+.modal-post__content__comments-quantity div {
+  width: 30px;
+  height: 30px;
+}
+
+.modal-post__content p {
+  color: white
+}
+
+@media screen and (max-width: 720px) {
+  .modal-post__content__likes-quantity div,
+  .modal-post__content__comments-quantity div {
+  width: 20px;
+  height: 20px;
+}
+}

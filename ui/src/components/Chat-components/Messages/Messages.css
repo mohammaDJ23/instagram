@@ -1,0 +1,154 @@
+.messages {
+  flex-basis: 70%;
+  position: relative;
+  overflow: hidden;
+}
+
+.messages__content {
+  width: 100%;
+  height: 100%;
+}
+
+.messages h2 {
+  margin-top: 30px;
+}
+
+.messages__content__icon {
+  text-align: center;
+  position: relative;
+  top: 50%;
+  transform: translateY(-62%);
+}
+
+.messages__content__icon div:nth-child(1) {
+  width: 120px;
+  height: 120px;
+  margin: 28px auto;
+}
+
+.messages__content__icon div:nth-child(1) svg {
+  width: 100%;
+  height: 100%;
+}
+
+.messages__content__icon div:nth-child(2) {
+  margin-bottom: 20px;
+}
+
+.messages__content__icon div:nth-child(2) h4 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.messages__content__messages__list {
+  overflow-y: auto;
+  width: 100%;
+  height: 89.5vh;
+  padding: 20px 20px 60px 20px;
+  margin: 0;
+  list-style-type: none;
+}
+
+.messages__content__messages__list__item:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.messages__content__messages__list__item__chat,
+.messages__content__form__content {
+  display: flex;
+  flex-direction: row;
+}
+
+.left-message {
+  justify-content: flex-start;
+}
+
+.right-message {
+  justify-content: flex-end;
+}
+
+.messages__content__messages__list__item__chat__profile {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.messages__content__messages__list__item__chat__profile img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.messages__content__messages__list__item__chat__message {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 250px;
+}
+
+.user-color {
+  background-color: rgb(247, 247, 247);
+}
+
+.target-color {
+  background-color:  rgb(0, 119, 255);
+  color: white;
+}
+
+.messages__content__messages__list__item__chat__message p:nth-of-type(1) {
+  font-size: 10px;
+}
+
+.messages__content__messages__list__item__chat__message p:nth-of-type(2) {
+  font-size: 18px;
+  word-wrap: break-word;
+}
+
+.left-profile {
+  margin-right: 6px;
+}
+
+.right-profile {
+  margin-left: 6px;
+}
+
+.messages__content__form {
+  width: 100%;
+  height: 50px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.messages__content__form form,
+.messages__content__form div {
+  width: 100%;
+  height: 100%;
+}
+
+.messages__content__form__content > div:nth-child(1) {
+  flex-basis: 90%;
+  background-color: rgb(247, 247, 247);
+  padding: 8px 4px 8px 8px;
+}
+
+.messages__content__form__content > div:nth-child(2) {
+  flex-basis: 10%;
+  padding: 8px 8px 8px 4px;
+  background-color: rgb(247, 247, 247);
+}
+
+.messages__content__form__content > div:nth-child(1) input {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  padding: 4px 12px;
+  background-color: white;
+}
+
+.messages__content__form__content > div:last-child button {
+  border-radius: 20px;
+  width: 100%;
+  height: 100%;
+}

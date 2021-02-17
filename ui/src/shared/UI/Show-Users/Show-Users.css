@@ -1,0 +1,19 @@
+.chat-menu__content__show-users {
+  box-shadow: 0 0 15px 0.1px rgba(136, 136, 136, 0.267);
+  position: fixed;
+  z-index: 60;
+  height: 250px;
+  overflow: auto;
+  padding: 12px;
+  width: 300px;
+}
+
+.is-chat {
+  top: 145px;
+}
+
+.is-nav {
+  top: 58px;
+  left: 50%;
+  transform: translateX(-72%);
+}

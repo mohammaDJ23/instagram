@@ -1,0 +1,49 @@
+.auth-form__content {
+  position: relative;
+  width: 600px;
+  max-width: 100%;
+  height: auto;
+  padding: 30px;
+  top: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.auth-form__content > div {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-form__content form,
+.auth-form__content label,
+.auth-form__content input {
+  width: 100%;
+  height: 100%;
+}
+
+.auth-form__content label,
+.auth-form__content input {
+  display: block;
+  transition: 0.2s;
+}
+
+.auth-form__content input, 
+.auth-form__content textarea {
+  padding: 3px 12px;
+}
+
+.auth-form__content label {
+  margin-bottom: 6px;
+}
+
+.auth-form__content form div:not(:last-child) {
+  margin-bottom: 14px;
+}
+
+.auth-form__content form > div:last-child {
+  margin-top: 20px;
+}
+
+.auth-form__content > form > div:last-child > button:nth-child(2) {
+  margin-left: 20px;
+}

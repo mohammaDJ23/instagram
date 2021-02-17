@@ -1,0 +1,35 @@
+.liked-list {
+  position: fixed;
+  max-width: 500px;
+  width: 500px;
+  height: 350px;
+  z-index: 200;
+  top: 59px;
+  left: 50%;
+  box-shadow: 1px 0 15px 0.1px rgba(136, 136, 136, 0.267);
+  overflow: auto;
+  padding: 15px;
+}
+
+.liked-list::after {
+  content: "";
+  position: fixed;
+  transform: translateX(1905%);
+  top: 35px;
+  right: 50%;
+  border-width: 12px;
+  border-color: transparent transparent rgb(253, 253, 253) transparent;
+  border-style: solid;
+}
+
+@media screen and (max-width: 1050px) {
+  .liked-list {
+    left: unset;
+    right: 0;
+  }
+
+  .liked-list::after {
+    transform: translateX(0);
+    right: 55px;
+  }
+}

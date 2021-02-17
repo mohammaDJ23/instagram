@@ -1,0 +1,102 @@
+.post-item {
+  width: 100%;
+  border-radius: 2px;
+  margin-bottom: 50px;
+}
+
+.post-item:last-child {
+  margin-bottom: 0;
+}
+
+.post-item__header {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+}
+
+.post-item__header div:nth-child(1) {
+  width: 40px;
+  height: 40px;
+}
+
+.post-item__header div:nth-child(1) img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-item__header div:nth-child(2) {
+  padding-left: 28px;
+}
+
+.post-item__image {
+  width: 100%;
+}
+
+.post-item__image img {
+  width: 100%;
+}
+
+.post-item__like-comment-message {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 14px 3px 14px;
+}
+
+.post-item__like-comment-message > div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+}
+
+.post-item__like-comment-message > div > div,
+.post-item__like-comment-message > div:nth-child(2) {
+  cursor: pointer;
+}
+
+.post-item__like-comment-message > div:nth-child(1) div {
+  margin-right: 15px;
+}
+.post-item__liked,
+.post-item__description {
+  padding: 3px 14px;
+}
+
+.post-item__description-view-comment,
+.post-item__description-comments {
+  padding: 3px 0;
+}
+
+.post-item__description-comments p {
+  word-break: break-all;
+}
+
+.post-item__time__time {
+  padding: 0 14px 6px 14px;
+}
+
+.post-item__footer {
+  border-top: 1px solid rgba(204, 204, 204, 0.747);
+}
+
+.post-item__footer__content-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+}
+
+.post-item__footer__content-form div:nth-child(1) {
+  width: 100%;
+}
+
+.post-item__footer__textarea {
+  outline: none;
+  border: none;
+  resize: none;
+  width: 100%;
+}
+
+.h-470 {
+  height: 470px;
+}
