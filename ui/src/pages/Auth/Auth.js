@@ -51,6 +51,10 @@ const Auth = () => {
   const sendInformationHandler = async e => {
     e.preventDefault();
 
+    if (!formState.formValid) {
+      return;
+    }
+
     const header = {
       "Content-Type": "application/json"
     };
@@ -125,12 +129,7 @@ const Auth = () => {
               formState={formState}
               formSwitchHandler={formSwitchHandler}
               spinner={
-                <Spinner
-                  isLoading={isLoading}
-                  margin="auth"
-                  width="1.4rem"
-                  height="1.4rem"
-                />
+                <Spinner isLoading={isLoading} margin="auth" width="1.4rem" height="1.4rem" />
               }
             />
           </form>

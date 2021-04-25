@@ -19,8 +19,6 @@ const {
   assignUsersIsFollowing,
   getFollow,
   getSuggestions,
-  checkUserId,
-  checkInputs,
   checkFollowersFollowing,
   getUser
 } = require("../../utils/controllers-utils/controllers-utils");
@@ -28,16 +26,19 @@ const {
 const db = require("../../utils/database-connection/database");
 
 exports.signup = async (req, res, next) => {
-  checkInputs(req, next);
+  const error = validationResult(req);
+
+  if (!error.isEmpty()) {
+    return next(new HttpError("invalid inputs passed, please check your data", 422));
+  }
+
   const { name, fullName, email, password } = req.body;
   let findUser;
 
   try {
     findUser = await User.getCollection("users").findOne({ email: email });
   } catch (error) {
-    return next(
-      new HttpError("signing up failed, please try againg later", 500)
-    );
+    return next(new HttpError("signing up failed, please try againg later", 500));
   }
 
   if (findUser) {
@@ -67,7 +68,12 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  checkInputs(req, next);
+  const error = validationResult(req);
+
+  if (!error.isEmpty()) {
+    return next(new HttpError("invalid inputs passed, please check your data", 422));
+  }
+
   const { email, password } = req.body;
   let user;
 
@@ -78,9 +84,7 @@ exports.login = async (req, res, next) => {
   }
 
   if (!user) {
-    return next(
-      new HttpError("your email is incorrect please try again.", 403)
-    );
+    return next(new HttpError("your email is incorrect please try again.", 403));
   }
 
   let isValidPassword = false;
@@ -89,17 +93,12 @@ exports.login = async (req, res, next) => {
     isValidPassword = await bcrypt.compare(password, user.password);
   } catch (error) {
     return next(
-      new HttpError(
-        "could not log you in, please check your credentials and try again",
-        500
-      )
+      new HttpError("could not log you in, please check your credentials and try again", 500)
     );
   }
 
   if (!isValidPassword) {
-    return next(
-      new HttpError("your password is incorrect please try again", 403)
-    );
+    return next(new HttpError("your password is incorrect please try again", 403));
   }
 
   let token;
@@ -111,9 +110,7 @@ exports.login = async (req, res, next) => {
       { expiresIn: "1h" }
     );
   } catch (error) {
-    return next(
-      new HttpError("could not able to create token, please try again", 500)
-    );
+    return next(new HttpError("could not able to create token, please try again", 500));
   }
 
   res.status(200).json({
@@ -126,9 +123,18 @@ exports.login = async (req, res, next) => {
 };
 
 exports.editProfile = async (req, res, next) => {
-  checkInputs(req, next);
+  const error = validationResult(req);
+
+  if (!error.isEmpty()) {
+    return next(new HttpError("invalid inputs passed, please check your data", 422));
+  }
+
   const { userId } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let profile;
 
   try {
@@ -150,14 +156,10 @@ exports.editProfile = async (req, res, next) => {
 
     profile = await User.editProfile(userId, req.body, req.file.path);
   } catch (error) {
-    return next(
-      new HttpError("could not edit profile, something went wrong.", 500)
-    );
+    return next(new HttpError("could not edit profile, something went wrong.", 500));
   }
 
-  res
-    .status(200)
-    .json({ message: "profile edited.", profile: profile.value.profile.image });
+  res.status(200).json({ message: "profile edited.", profile: profile.value.profile.image });
 };
 
 exports.updateFollowersFollowing = async (req, res, next) => {
@@ -165,12 +167,13 @@ exports.updateFollowersFollowing = async (req, res, next) => {
   const { userId, targetUserId } = req.params;
 
   if (!["FOLLOW", "UNFOLLOW_FOLLOWING", "UNFOLLOW_FOLLOWERS"].includes(t)) {
-    return next(
-      new HttpError("could not find a valid query, something went wrong.", 500)
-    );
+    return next(new HttpError("could not find a valid query, something went wrong.", 500));
   }
 
-  checkUserId(req.userId, userId, next);
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let findedUser;
 
   try {
@@ -178,22 +181,15 @@ exports.updateFollowersFollowing = async (req, res, next) => {
       _id: new mongodb.ObjectId(targetUserId)
     });
   } catch (error) {
-    return next(
-      new HttpError(
-        "could not find the target user, something went wrong.",
-        500
-      )
-    );
+    return next(new HttpError("could not find the target user, something went wrong.", 500));
   }
 
   if (!findedUser) {
-    return next(
-      new HttpError("there is no user with this id in the database.", 403)
-    );
+    return next(new HttpError("there is no user with this id in the database.", 403));
   }
 
   try {
-    await checkFollowersFollowing(targetUserId, next);
+    await checkFollowersFollowing(targetUserId);
   } catch (error) {
     return next(error);
   }
@@ -214,10 +210,7 @@ exports.updateFollowersFollowing = async (req, res, next) => {
     }
   } catch (error) {
     return next(
-      new HttpError(
-        "could not create notice document for the target, please try again.",
-        500
-      )
+      new HttpError("could not create notice document for the target, please try again.", 500)
     );
   }
 
@@ -250,9 +243,7 @@ exports.updateFollowersFollowing = async (req, res, next) => {
           );
         }, transactionOptions);
       } catch (error) {
-        return next(
-          new HttpError("could not follow the user, please try again.", 500)
-        );
+        return next(new HttpError("could not follow the user, please try again.", 500));
       } finally {
         await session.endSession();
       }
@@ -272,17 +263,10 @@ exports.updateFollowersFollowing = async (req, res, next) => {
             "unfollowFromFollowing"
           );
 
-          await Notice.updateNotice(
-            userId,
-            targetUserId,
-            { session },
-            "removeUserOnTargetNotice"
-          );
+          await Notice.updateNotice(userId, targetUserId, { session }, "removeUserOnTargetNotice");
         }, transactionOptions);
       } catch (error) {
-        return next(
-          new HttpError("could not unfollow the user, please try again.", 500)
-        );
+        return next(new HttpError("could not unfollow the user, please try again.", 500));
       } finally {
         await session.endSession();
       }
@@ -301,9 +285,7 @@ exports.updateFollowersFollowing = async (req, res, next) => {
           "unfollowFromFollowers"
         );
       } catch (error) {
-        return next(
-          new HttpError("could not unfollow the user, please try again.", 500)
-        );
+        return next(new HttpError("could not unfollow the user, please try again.", 500));
       }
 
       res.status(200).json({ whoUnfollowed, message: "the user unfollowed" });
@@ -316,7 +298,11 @@ exports.updateFollowersFollowing = async (req, res, next) => {
 
 exports.profile = async (req, res, next) => {
   const { userId, target } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let tg;
 
   try {
@@ -324,15 +310,11 @@ exports.profile = async (req, res, next) => {
       _id: new mongodb.ObjectId(target)
     });
   } catch (error) {
-    return next(
-      new HttpError("could not found user id, please try again", 500)
-    );
+    return next(new HttpError("could not found user id, please try again", 500));
   }
 
   if (!tg) {
-    return next(
-      new HttpError("there is no user with this id, something went wrong", 403)
-    );
+    return next(new HttpError("there is no user with this id, something went wrong", 403));
   }
 
   let user;
@@ -532,26 +514,17 @@ exports.profile = async (req, res, next) => {
       .toArray();
   } catch (error) {
     return next(
-      new HttpError(
-        "could not found any information about user, please try agian.",
-        500
-      )
+      new HttpError("could not found any information about user, please try agian.", 500)
     );
   }
 
   let newFollow;
 
   try {
-    newFollow = await assignUsersIsFollowing(
-      { posts: [], following, followers, sug: [] },
-      userId
-    );
+    newFollow = await assignUsersIsFollowing({ posts: [], following, followers, sug: [] }, userId);
   } catch (error) {
     return next(
-      new HttpError(
-        "could not compare some information about the user, please try again",
-        500
-      )
+      new HttpError("could not compare some information about the user, please try again", 500)
     );
   }
 
@@ -585,7 +558,11 @@ exports.profile = async (req, res, next) => {
 
 exports.suggestions = async (req, res, next) => {
   const { userId } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let follow;
   let sug;
 
@@ -598,9 +575,7 @@ exports.suggestions = async (req, res, next) => {
       .aggregate([...getSuggestions(follow)])
       .toArray();
   } catch (error) {
-    return next(
-      new HttpError("could not found any suggestions, please try again", 500)
-    );
+    return next(new HttpError("could not found any suggestions, please try again", 500));
   }
 
   let newSuggestions;
@@ -612,10 +587,7 @@ exports.suggestions = async (req, res, next) => {
     );
   } catch (error) {
     return next(
-      new HttpError(
-        "could not compare some information about the user, please try again",
-        500
-      )
+      new HttpError("could not compare some information about the user, please try again", 500)
     );
   }
 
@@ -627,7 +599,11 @@ exports.suggestions = async (req, res, next) => {
 
 exports.notice = async (req, res, next) => {
   const { userId } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let notice;
 
   try {
@@ -675,9 +651,7 @@ exports.notice = async (req, res, next) => {
       ])
       .toArray();
   } catch (error) {
-    return next(
-      new HttpError("could not found any notice, please try again", 500)
-    );
+    return next(new HttpError("could not found any notice, please try again", 500));
   }
 
   let newNotice;
@@ -689,10 +663,7 @@ exports.notice = async (req, res, next) => {
     );
   } catch (error) {
     return next(
-      new HttpError(
-        "could not compare some information about the user, please try again",
-        500
-      )
+      new HttpError("could not compare some information about the user, please try again", 500)
     );
   }
 
@@ -702,7 +673,11 @@ exports.notice = async (req, res, next) => {
 exports.users = async (req, res, next) => {
   const { userId } = req.params;
   const { equalTo } = req.query;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let indexes;
   let users;
 
@@ -744,9 +719,7 @@ exports.users = async (req, res, next) => {
       ])
       .toArray();
   } catch (error) {
-    return next(
-      new HttpError("could not found any users, please try again", 500)
-    );
+    return next(new HttpError("could not found any users, please try again", 500));
   }
 
   res.status(200).json({ users, message: "users fetched" });
@@ -754,7 +727,11 @@ exports.users = async (req, res, next) => {
 
 exports.chat = async (req, res, next) => {
   const { userId } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let usChatUsers;
 
   try {
@@ -788,9 +765,7 @@ exports.chat = async (req, res, next) => {
       ])
       .toArray();
   } catch (error) {
-    return next(
-      new HttpError("could not found any users, please try again.", 500)
-    );
+    return next(new HttpError("could not found any users, please try again.", 500));
   }
 
   res.status(200).json({ users: usChatUsers, message: "all users fetched." });
@@ -798,7 +773,11 @@ exports.chat = async (req, res, next) => {
 
 exports.startChat = async (req, res, next) => {
   const { userId, target } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let findedUser;
 
   try {
@@ -806,18 +785,11 @@ exports.startChat = async (req, res, next) => {
       _id: new mongodb.ObjectId(target)
     });
   } catch (error) {
-    return next(
-      new HttpError("could not found the target, please try again.", 500)
-    );
+    return next(new HttpError("could not found the target, please try again.", 500));
   }
 
   if (!findedUser) {
-    return next(
-      new HttpError(
-        "target not exist in the database, something went wrong.",
-        403
-      )
-    );
+    return next(new HttpError("target not exist in the database, something went wrong.", 403));
   }
 
   let user;
@@ -827,12 +799,7 @@ exports.startChat = async (req, res, next) => {
     user = await getUser(userId);
     trgt = await getUser(target);
   } catch (error) {
-    return next(
-      new HttpError(
-        "could not found information about users, please try again.",
-        50
-      )
-    );
+    return next(new HttpError("could not found information about users, please try again.", 50));
   }
 
   if (target === req.userId) {
@@ -848,12 +815,7 @@ exports.startChat = async (req, res, next) => {
   try {
     await UsChat.updateUsChat(userId, target);
   } catch (error) {
-    return next(
-      new HttpError(
-        "could not update chat-list document, please try again.",
-        500
-      )
-    );
+    return next(new HttpError("could not update chat-list document, please try again.", 500));
   }
 
   let msgs;
@@ -867,12 +829,7 @@ exports.startChat = async (req, res, next) => {
     msgs = messages ? messages.messages : null;
     room = messages ? messages.room : null;
   } catch (error) {
-    return next(
-      new HttpError(
-        "could not create message collection, something went wrong.",
-        500
-      )
-    );
+    return next(new HttpError("could not create message collection, something went wrong.", 500));
   }
 
   if (!msgs) {
@@ -883,16 +840,9 @@ exports.startChat = async (req, res, next) => {
     try {
       await message.save();
     } catch (error) {
-      return next(
-        new HttpError(
-          "could not create message collection, something went wrong.",
-          500
-        )
-      );
+      return next(new HttpError("could not create message collection, something went wrong.", 500));
     }
   }
 
-  res
-    .status(200)
-    .json({ messages: msgs, room, user: user[0], target: trgt[0] });
+  res.status(200).json({ messages: msgs, room, user: user[0], target: trgt[0] });
 };

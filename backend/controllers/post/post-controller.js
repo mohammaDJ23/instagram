@@ -14,8 +14,6 @@ const {
   getSuggestions,
   getFollow,
   assignUsersIsFollowing,
-  checkUserId,
-  checkInputs,
   checkFollowersFollowing,
   getName,
   getPsts,
@@ -34,21 +32,19 @@ exports.getPosts = async (req, res, next) => {
   const { quantity, scrollNo } = req.query;
 
   if (quantity <= 0 || quantity >= 10) {
-    return next(
-      new HttpError("please enter standard quantity, something went wrong.")
-    );
+    return next(new HttpError("please enter standard quantity, something went wrong."));
   }
 
   if (scrollNo <= 0) {
-    return next(
-      new HttpError("please enter valid number to get posts, something went wrong.")
-    );
+    return next(new HttpError("please enter valid number to get posts, something went wrong."));
   }
 
-  checkUserId(req.userId, userId, next);
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
 
   try {
-    await checkFollowersFollowing(userId, next);
+    await checkFollowersFollowing(userId);
   } catch (error) {
     return next(error);
   }
@@ -58,9 +54,7 @@ exports.getPosts = async (req, res, next) => {
   try {
     userSaved = await Saved.getCollection("saved").findOne({ userId: userId });
   } catch (error) {
-    return next(
-      new HttpError("could not found posts you saved them, please try again.", 500)
-    );
+    return next(new HttpError("could not found posts you saved them, please try again.", 500));
   }
 
   if (!userSaved) {
@@ -70,10 +64,7 @@ exports.getPosts = async (req, res, next) => {
       await saved.save();
     } catch (error) {
       return next(
-        new HttpError(
-          "could not create a collection in the database, please try again",
-          500
-        )
+        new HttpError("could not create a collection in the database, please try again", 500)
       );
     }
   }
@@ -154,10 +145,7 @@ exports.getPosts = async (req, res, next) => {
     );
   } catch (error) {
     return next(
-      new HttpError(
-        "could not compare some information about the user, please try again",
-        500
-      )
+      new HttpError("could not compare some information about the user, please try again", 500)
     );
   }
 
@@ -178,10 +166,19 @@ exports.getPosts = async (req, res, next) => {
 };
 
 exports.createPost = async (req, res, next) => {
-  checkInputs(req, next);
+  const error = validationResult(req);
+
+  if (!error.isEmpty()) {
+    return next(new HttpError("invalid inputs passed, please check your data", 422));
+  }
+
   const { address, description } = req.body;
   const userId = req.params.userId;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   const post = new Post(address, description, req.file.path, userId);
   let findedSavedCollection;
 
@@ -215,9 +212,18 @@ exports.createPost = async (req, res, next) => {
 };
 
 exports.editPost = async (req, res, next) => {
-  checkInputs(req, next);
+  const error = validationResult(req);
+
+  if (!error.isEmpty()) {
+    return next(new HttpError("invalid inputs passed, please check your data", 422));
+  }
+
   const { userId } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   const postId = req.params.postId;
 
   try {
@@ -239,9 +245,7 @@ exports.editPost = async (req, res, next) => {
 
     await Post.updatePost(postId, req.body, req.file.path);
   } catch (error) {
-    return next(
-      new HttpError("could not update the post, something went wrong.", 500)
-    );
+    return next(new HttpError("could not update the post, something went wrong.", 500));
   }
 
   res.status(200).json({ message: "post updated." });
@@ -256,12 +260,12 @@ exports.updateLikesComments = async (req, res, next) => {
     return next(new HttpError("not found valid query, something went wrong.", 500));
   }
 
-  checkUserId(req.userId, userId, next);
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
 
   try {
-    const likesComments = await LikesComments.getCollection(
-      "likes-comments"
-    ).findOne({
+    const likesComments = await LikesComments.getCollection("likes-comments").findOne({
       postId: postId
     });
 
@@ -269,9 +273,7 @@ exports.updateLikesComments = async (req, res, next) => {
       throw new HttpError("could not find the post");
     }
   } catch (error) {
-    return next(
-      new HttpError("could not find the post, something went wrong.", 500)
-    );
+    return next(new HttpError("could not find the post, something went wrong.", 500));
   }
 
   if (t === "likes") {
@@ -282,18 +284,11 @@ exports.updateLikesComments = async (req, res, next) => {
       like = await LikesComments.updateLikesComments(postId, userId, "likes");
 
       if (like.value.like.likes.length > 0) {
-        username = await getName(
-          like.value.like.likes[like.value.like.likes.length - 1].userId
-        );
+        username = await getName(like.value.like.likes[like.value.like.likes.length - 1].userId);
       }
     } catch (error) {
       console.log(error);
-      return next(
-        new HttpError(
-          "you are not allow to like the post, something went wrong.",
-          500
-        )
-      );
+      return next(new HttpError("you are not allow to like the post, something went wrong.", 500));
     }
 
     const newLike = like.value.like.likes.find(u => u.userId === userId);
@@ -315,12 +310,7 @@ exports.updateLikesComments = async (req, res, next) => {
     let username;
 
     try {
-      com = await LikesComments.updateLikesComments(
-        postId,
-        userId,
-        "comments",
-        comment
-      );
+      com = await LikesComments.updateLikesComments(postId, userId, "comments", comment);
 
       if (com.value.comment.comments.length > 0) {
         username = await getName(
@@ -329,10 +319,7 @@ exports.updateLikesComments = async (req, res, next) => {
       }
     } catch (error) {
       return next(
-        new HttpError(
-          "you not allow to write a comment for this post, something went wrong.",
-          500
-        )
+        new HttpError("you not allow to write a comment for this post, something went wrong.", 500)
       );
     }
 
@@ -353,7 +340,11 @@ exports.updateLikesComments = async (req, res, next) => {
 
 exports.getPost = async (req, res, next) => {
   const { postId, userId } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let post;
 
   try {
@@ -372,10 +363,7 @@ exports.getPost = async (req, res, next) => {
   let saved;
 
   try {
-    pst = await getPsts(
-      { $match: { _id: new mongodb.ObjectId(postId) } },
-      { postsOp: false }
-    );
+    pst = await getPsts({ $match: { _id: new mongodb.ObjectId(postId) } }, { postsOp: false });
     saved = await getSaved(userId);
   } catch (error) {
     return next(new HttpError("could not found any posts, please try again", 500));
@@ -406,10 +394,7 @@ exports.getPost = async (req, res, next) => {
     );
   } catch (error) {
     return next(
-      new HttpError(
-        "could not compare some information about the user, please try again",
-        500
-      )
+      new HttpError("could not compare some information about the user, please try again", 500)
     );
   }
 
@@ -418,7 +403,10 @@ exports.getPost = async (req, res, next) => {
 
 exports.saved = async (req, res, next) => {
   const { postId, userId } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
 
   let post;
 
@@ -474,9 +462,7 @@ exports.saved = async (req, res, next) => {
       ])
       .toArray();
   } catch (error) {
-    return next(
-      new HttpError("could not save the post, something went wrong.", 500)
-    );
+    return next(new HttpError("could not save the post, something went wrong.", 500));
   }
 
   res.status(200).json({
@@ -496,18 +482,17 @@ exports.explore = async (req, res, next) => {
   const { quantity, scrollNo } = req.query;
 
   if (quantity <= 0 || quantity >= 16) {
-    return next(
-      new HttpError("please enter standard quantity, something went wrong.")
-    );
+    return next(new HttpError("please enter standard quantity, something went wrong."));
   }
 
   if (scrollNo <= 0) {
-    return next(
-      new HttpError("please enter valid number to get photos, something went wrong.")
-    );
+    return next(new HttpError("please enter valid number to get photos, something went wrong."));
   }
 
-  checkUserId(req.userId, userId, next);
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let docC;
   let photos;
 
@@ -553,7 +538,11 @@ exports.explore = async (req, res, next) => {
 
 exports.deletePost = async (req, res, next) => {
   const { postId, userId } = req.params;
-  checkUserId(req.userId, userId, next);
+
+  if (req.userId.toString() !== userId.toString()) {
+    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+  }
+
   let deletedPost;
   const session = db.client().startSession();
 
@@ -569,9 +558,7 @@ exports.deletePost = async (req, res, next) => {
       await LikesComments.deleteLikesComments(postId, { session });
     }, transactionOptions);
   } catch (error) {
-    return next(
-      new HttpError("could not delete the post, something went wrong.", 500)
-    );
+    return next(new HttpError("could not delete the post, something went wrong.", 500));
   } finally {
     await session.endSession();
   }
