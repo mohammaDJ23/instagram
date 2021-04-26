@@ -40,7 +40,7 @@ exports.getPosts = async (req, res, next) => {
   }
 
   if (req.userId.toString() !== userId.toString()) {
-    return next(new HttpError("you are not allow to do any operation on the server posts", 401));
+    return next(new HttpError("you are not allow to do any operation on the server.", 401));
   }
 
   try {
