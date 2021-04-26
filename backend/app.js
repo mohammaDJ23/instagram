@@ -70,9 +70,7 @@ app.use((error, req, res, next) => {
     if (error) {
       console.log(error);
     } else {
-      const server = app.listen(PORT, () =>
-        console.log(`server is running on ${PORT} port`)
-      );
+      const server = app.listen(PORT, () => console.log(`server is running on ${PORT} port`));
 
       const io = require("socket.io")(server, {
         cors: {
