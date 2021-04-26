@@ -387,8 +387,6 @@ module.exports = {
   assignUsersIsFollowing,
   getFollow,
   getSuggestions,
-  checkUserId,
-  checkInputs,
   checkFollowersFollowing,
   getUser,
   getName,
