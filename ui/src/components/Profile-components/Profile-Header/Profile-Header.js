@@ -57,9 +57,7 @@ const ProfileHeader = memo(props => {
         return;
       }
 
-      const following = profile.following.filter(
-        user => user["isFollowing"] !== false
-      );
+      const following = profile.following.filter(user => user["isFollowing"] !== false);
 
       if (following.length > 0) {
         profile.user.following =
@@ -98,9 +96,9 @@ const ProfileHeader = memo(props => {
 
   const followers = (
     <Wrapper
-      className={`${
-        !showWrappers && "profile-header__content__inside__profile-info__follwers"
-      } ${showWrappers && "profile-header__content__profile-info__follwers"}`}
+      className={`${!showWrappers && "profile-header__content__inside__profile-info__follwers"} ${
+        showWrappers && "profile-header__content__profile-info__follwers"
+      }`}
     >
       <Ul>
         <Li>
@@ -211,17 +209,11 @@ const ProfileHeader = memo(props => {
 
                   {authContext.userId === userId && (
                     <React.Fragment>
-                      <Button
-                        className="weight btn-edit"
-                        onClick={navigateToEditProfileHandler}
-                      >
+                      <Button className="weight btn-edit" onClick={navigateToEditProfileHandler}>
                         Edit Profile
                       </Button>
 
-                      <Button
-                        className="weight btn-create"
-                        onClick={navigateToCreatePostHandler}
-                      >
+                      <Button className="weight btn-create" onClick={navigateToCreatePostHandler}>
                         Create Post
                       </Button>
                     </React.Fragment>

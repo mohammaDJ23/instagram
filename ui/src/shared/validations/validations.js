@@ -27,13 +27,15 @@ export const validate = (value, validators) => {
     }
 
     if (validator.type === VALIDATION_TYPE_EMAIL) {
-      isValid = isValid && /^\S+@\S+\.\S+$/.test(value);
+      isValid =
+        isValid &&
+        /^[\w-]+(\.[\w-]+)*@([a-z0-9-]+(\.[a-z0-9-]+)*?\.[a-z]{2,6}|(\d{1,3}\.){3}\d{1,3})(:\d{4})?$/.test(
+          value
+        );
     }
 
     if (validator.type === VALIDATION_TYPE_PASSWORD) {
-      isValid =
-        isValid &&
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/.test(value);
+      isValid = isValid && /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/.test(value);
     }
   }
 

@@ -56,14 +56,7 @@ const Profile = () => {
         } catch (error) {}
       })();
     }
-  }, [
-    transitionData,
-    userId,
-    profile,
-    authContext.userId,
-    getProfile,
-    getUserIdInParams
-  ]);
+  }, [transitionData, userId, profile, authContext.userId, getProfile, getUserIdInParams]);
 
   const like = useCallback(
     (postId, likeIcon) => {
@@ -149,25 +142,13 @@ const Profile = () => {
       if (authContext.userId === userId) {
         const userIndexFollowing = prf.following.findIndex(u => u.userId === uId);
 
-        if (
-          uId &&
-          !followType &&
-          isFollowers &&
-          userInFollowers &&
-          userIndexFollowing === -1
-        ) {
+        if (uId && !followType && isFollowers && userInFollowers && userIndexFollowing === -1) {
           userInFollowers.isFollowing = true;
           prf.following.push(userInFollowers);
           prf.user.following = prf.user.following + 1;
         }
 
-        if (
-          uId &&
-          followType &&
-          isFollowers &&
-          userInFollowers &&
-          userIndexFollowing > -1
-        ) {
+        if (uId && followType && isFollowers && userInFollowers && userIndexFollowing > -1) {
           userInFollowers.isFollowing = false;
           prf.following.splice(userIndexFollowing, 1);
           prf.user.following = prf.user.following - 1;

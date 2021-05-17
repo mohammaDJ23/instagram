@@ -12,7 +12,10 @@ router.post(
   [
     check("name").trim().isLowercase().isLength({ min: 5, max: 30 }),
     check("fullName").trim().isLength({ min: 5, max: 30 }),
-    check("email").trim().normalizeEmail().isEmail(),
+    check("email")
+      .trim()
+      .matches(/^[\w-]+(\.[\w-]+)*@([a-z0-9-]+(\.[a-z0-9-]+)*?\.[a-z]{2,6}|(\d{1,3}\.){3}\d{1,3})(:\d{4})?$/)
+      .normalizeEmail(),
     check("password")
       .trim()
       .isLength({ min: 5, max: 30 })
@@ -42,11 +45,7 @@ router.get("/:userId/users", tokenChecker, userController.users);
 
 router.get("/:userId/chat", tokenChecker, userController.chat);
 
-router.post(
-  "/:userId/:target/start-chat",
-  tokenChecker,
-  userController.startChat
-);
+router.post("/:userId/:target/start-chat", tokenChecker, userController.startChat);
 
 router.get("/:userId/:target/profile", tokenChecker, userController.profile);
 
